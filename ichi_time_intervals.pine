@@ -1,0 +1,134 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © dukeofetiquette
+
+//@version=5
+indicator(title="Ichimoku Time Intervals", shorttitle="Ichimoku Intervals", overlay = true)
+
+
+// TENKAN
+bool showTenkan = input.bool(true, "Show Tenkan")
+lookbackInput = input.int(20, "Tenkan period", minval = 1, maxval = 4999)
+color tenkanBarColor = input.color(defval = color.new(color.teal, 50), title = "Tenkan bar color")
+
+higherBars = 0
+lowerBars = 0
+recentHigh = high
+recentHighIndex = 0
+recentLow = low
+recentLowIndex = 0
+var line line20 = na
+if barstate.islast and showTenkan
+    var label lblHigh = label.new(na, na, "", color=color.white, textcolor = color.teal, style = label.style_label_down)
+    var label lblLow = label.new(na, na, "", color=color.white, textcolor = color.teal, style = label.style_label_up)
+    for i = 1 to lookbackInput - 1
+        if high[i] > recentHigh
+            recentHigh := high[i]
+            recentHighIndex := i
+        else if low[i] < recentLow
+            recentLow := low[i]
+            recentLowIndex := i
+
+        if i == lookbackInput - 1
+            if na(line20)
+                line20 := line.new(bar_index[i], recentLow, bar_index[i], recentHigh, color=tenkanBarColor, width=5)
+            else
+                line.delete(line20)
+                line20 := line.new(bar_index[i], recentLow, bar_index[i], recentHigh, color=tenkanBarColor, width=5)
+
+    label.set_xy(lblLow, bar_index - recentLowIndex, recentLow)
+    label.set_text(lblLow, str.tostring(recentLow, "PL-2O: "))
+
+    label.set_xy(lblHigh, bar_index - recentHighIndex, recentHigh)
+    label.set_text(lblHigh, str.tostring(recentHigh, "PH-2O: "))
+
+
+
+
+
+
+// KIJUN
+bool showKijun = input.bool(true, "Show Kijun")
+lookbackInput := input.int(60, "Kijun period", minval = 1, maxval = 4999)
+color kijunBarColor = input.color(defval = color.new(color.red, 50), title = "Kijun bar color")
+higherBars := 0
+lowerBars := 0
+recentHigh := high
+recentHighIndex := 0
+recentLow := low
+recentLowIndex := 0
+var line line60 = na
+if barstate.islast and showKijun
+    var label lblHigh = label.new(na, na, "", color=color.maroon, textcolor = color.white, style = label.style_label_down)
+    var label lblLow = label.new(na, na, "", color=color.maroon, textcolor = color.white, style = label.style_label_up)
+    for i = 1 to lookbackInput - 1
+        if high[i] > recentHigh
+            recentHigh := high[i]
+            recentHighIndex := i
+        else if low[i] < recentLow
+            recentLow := low[i]
+            recentLowIndex := i
+
+        if i == lookbackInput - 1
+            if na(line60)
+                line60 := line.new(bar_index[i], recentLow, bar_index[i], recentHigh, color=kijunBarColor, width=5)
+
+            else
+                line.delete(line60)
+            if na(line60)
+                line60 := line.new(bar_index[i], recentLow, bar_index[i], recentHigh, color=kijunBarColor, width=5)
+
+    label.set_xy(lblLow, bar_index - recentLowIndex, recentLow)
+    label.set_text(lblLow, str.tostring(recentLow, "PL-6O: "))
+
+    label.set_xy(lblHigh, bar_index - recentHighIndex, recentHigh)
+    label.set_text(lblHigh, str.tostring(recentHigh, "PH-6O: "))
+
+
+// CONVERSION LINE
+bool showConversion = input.bool(true, "Show Conversion")
+lookbackInput := input.int(120, "Conversion line period", minval = 1, maxval = 4999)
+color conversionBarColor = input.color(defval = color.new(color.green, 50), title = "Conversion bar color")
+higherBars := 0
+lowerBars := 0
+recentHigh := high
+recentHighIndex := 0
+recentLow := low
+recentLowIndex := 0
+var line line120 = na
+if barstate.islast and showConversion
+    var label lblHigh = label.new(na, na, "", color=color.black, textcolor = color.white, style = label.style_label_down)
+    var label lblLow = label.new(na, na, "", color=color.black, textcolor = color.white, style = label.style_label_up)
+    for i = 1 to lookbackInput - 1
+        if high[i] > recentHigh
+            recentHigh := high[i]
+            recentHighIndex := i
+        else if low[i] < recentLow
+            recentLow := low[i]
+            recentLowIndex := i
+
+        if i == lookbackInput - 1
+            if na(line120)
+                line120 := line.new(bar_index[i], recentLow, bar_index[i], recentHigh, color=conversionBarColor, width=5)
+
+            else
+                line.delete(line120)
+                line120 := line.new(bar_index[i], recentLow, bar_index[i], recentHigh, color=conversionBarColor, width=5)
+
+    label.set_xy(lblLow, bar_index - recentLowIndex, recentLow)
+    label.set_text(lblLow, str.tostring(recentLow, "PL-12O: "))
+
+    label.set_xy(lblHigh, bar_index - recentHighIndex, recentHigh)
+    label.set_text(lblHigh, str.tostring(recentHigh, "PH-12O: "))
+
+
+
+
+// var string msg = "•LABEL•\nHigh = " + str.tostring(high, format.mintick) + "\n🠇"
+// var bool showTxtBox = input.bool(true, 'Show Textbox')
+// var color labelColor = input.color(color.white, "Textbox Font Color")
+// if showTxtBox
+//     var label txtBox = label.new(na, na, msg, style = label.style_none, textcolor = labelColor, size = size.normal)
+//     label.set_x(txtBox, bar_index[120-1])
+//     label.set_y(txtBox, (recentHigh+recentLow)/2)
+
+//     line.new(bar_index[120-1], (recentHigh+recentLow)/2, bar_index[120-1], high, color=color.green, width=1)
