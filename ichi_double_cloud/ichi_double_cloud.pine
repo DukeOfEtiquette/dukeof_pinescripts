@@ -1,0 +1,78 @@
+// inspired by golshy
+
+//@version=5
+indicator(title="Ichimoku Double Cloud (9)", shorttitle="Ichimoku Double Cloud", overlay=true)
+
+// https://www.tradingcode.net/tradingview/donchian-channel-indicator/
+donchian(len) => math.avg(ta.lowest(len), ta.highest(len))
+
+// legacy double settings
+int legacyConversionPeriod = 18
+int legacyBasePriod = 52
+int legacyLaggingSpan2Period = 104
+int legacyDisplacement = 26
+
+// crypto cloud settings
+int cryptoConversionPeriod = 20
+int cryptoBasePriod = 60
+int cryptoLaggingSpan2Period = 120
+int cryptoDisplacement = 30
+
+// ### Inputs ###
+bool showLegacyCloud = input.bool(true, "Show legacy cloud")
+bool showCryptoCloud = input.bool(true, "Show crypto cloud")
+
+
+// ### CRYPTO TIMEFRAME CLOUD ###
+// https://www.investopedia.com/terms/i/ichimoku-cloud.asp
+bool showCrypto = showCryptoCloud
+float conversionLine = donchian(cryptoConversionPeriod)
+float baseLine = donchian(cryptoBasePriod)
+float leadLine1 = math.avg(conversionLine, baseLine)
+float leadLine2 = donchian(cryptoLaggingSpan2Period)
+
+// plot lines
+plot(showCrypto ? conversionLine : na, color=#2962FF, title="Crypto Conversion Line", display = display.all)
+plot(showCrypto ? baseLine : na, color=#B71C1C, title="Crypto Base Line", display = display.all)
+plot(showCrypto ? close : na, offset = -cryptoDisplacement + 1, color=#43A047, title="Crypto Lagging Span", display = display.none)
+
+// plot the sacred cloud
+p1 = plot(showCrypto ? leadLine1 : na, offset = cryptoDisplacement - 1, color=#A5D6A7,
+	 title="Crypto Leading Span A", display = display.none)
+p2 = plot(showCrypto ? leadLine2 : na, offset = cryptoDisplacement - 1, color=#EF9A9A,
+	 title="Crypto Leading Span B", display = display.none)
+
+float upper = leadLine1 > leadLine2 ? leadLine1 : leadLine2
+float lower = leadLine1 < leadLine2 ? leadLine1 : leadLine2
+
+// These are the same as leadLine1 and leadLine2, not sure why they are included on ichimoku cloud indicators...
+// plot(showCrypto ? upper : na, offset = cryptoDisplacement - 1, title = "Crypto Kumo Cloud Upper Line", display = display.none)
+// plot(showCrypto ? lower : na, offset = cryptoDisplacement - 1, title = "Crypto Kumo Cloud Lower Line", display = display.none)
+fill(p1, p2, color = leadLine1 > leadLine2 ? color.rgb(67, 160, 71, 42) : color.rgb(244, 67, 54, 42), title = "Crypto Cloud colors", display = display.all)
+
+
+// ### LEGACY CLOUD ###
+bool showLegacy = showLegacyCloud
+conversionLine := donchian(legacyConversionPeriod)
+baseLine := donchian(legacyBasePriod)
+leadLine1 := math.avg(conversionLine, baseLine)
+leadLine2 := donchian(legacyLaggingSpan2Period)
+
+// plot lines
+plot(showLegacy ? conversionLine : na, color=#006064, title="Legacy Conversion Line", display = display.all)
+plot(showLegacy ? baseLine : na, color=#801922, title="Legacy Base Line", display = display.all)
+plot(showLegacy ? close : na, offset = -legacyDisplacement + 1, color=#81c784, title="Legacy Lagging Span", display = display.none)
+
+// plot the sacred scaled cloud
+sp1 = plot(showLegacy ? leadLine1 : na, offset = legacyDisplacement - 1, color=#1b5e20,
+	 title="Legacy Leading Span A", display = display.none)
+sp2 = plot(showLegacy ? leadLine2 : na, offset = legacyDisplacement - 1, color=#801922,
+	 title="Legacy Leading Span B", display = display.none)
+
+upper := leadLine1 > leadLine2 ? leadLine1 : leadLine2
+lower := leadLine1 < leadLine2 ? leadLine1 : leadLine2
+
+// These are the same as leadLine1 and leadLine2, not sure why they are included on ichimoku cloud indicators...
+// plot(showLegacy ? upper : na, offset = legacyDisplacement - 1, title = "Legacy Kumo Cloud Upper Line", display = display.none)
+// plot(showLegacy ? lower : na, offset = legacyDisplacement - 1, title = "Legacy Kumo Cloud Lower Line", display = display.none)
+fill(sp1, sp2, color = leadLine1 > leadLine2 ? color.new(#388e3c, 90) : color.new(#b22833, 90), title = "Legacy Cloud colors", display = display.all)
