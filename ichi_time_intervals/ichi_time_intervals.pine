@@ -42,10 +42,6 @@ if barstate.islast and showTenkan
     label.set_text(lblHigh, str.tostring(recentHigh, "PH-2O: "))
 
 
-
-
-
-
 // KIJUN
 bool showKijun = input.bool(true, "Show Kijun")
 lookbackInput := input.int(60, "Kijun period", minval = 1, maxval = 4999)
@@ -119,16 +115,3 @@ if barstate.islast and showConversion
 
     label.set_xy(lblHigh, bar_index - recentHighIndex, recentHigh)
     label.set_text(lblHigh, str.tostring(recentHigh, "PH-12O: "))
-
-
-
-
-// var string msg = "•LABEL•\nHigh = " + str.tostring(high, format.mintick) + "\n🠇"
-// var bool showTxtBox = input.bool(true, 'Show Textbox')
-// var color labelColor = input.color(color.white, "Textbox Font Color")
-// if showTxtBox
-//     var label txtBox = label.new(na, na, msg, style = label.style_none, textcolor = labelColor, size = size.normal)
-//     label.set_x(txtBox, bar_index[120-1])
-//     label.set_y(txtBox, (recentHigh+recentLow)/2)
-
-//     line.new(bar_index[120-1], (recentHigh+recentLow)/2, bar_index[120-1], high, color=color.green, width=1)
