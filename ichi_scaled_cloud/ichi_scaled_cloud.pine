@@ -1,0 +1,105 @@
+// inspired by CryptoPl3be, rinogo1, Kumoshi and the Cloud 9 community
+// original by CryptoPl3be: https://www.tradingview.com/script/X7YqouRe-Ichimoku-Weekly-on-Daily-Double-Crypto/
+// all hail carpenoctom
+
+//@version=5
+indicator(title="Ichimoku Scaled Cloud (9)", shorttitle="Ichimoku Scaled", overlay=true)
+
+// https://www.tradingcode.net/tradingview/donchian-channel-indicator/
+donchian(len) => math.avg(ta.lowest(len), ta.highest(len))
+
+// crypto cloud settings
+int cryptoConversionPeriod = 20
+int cryptoBasePriod = 60
+int cryptoLaggingSpan2Period = 120
+int cryptoDisplacement = 30
+
+// ### Inputs ###
+string scaledGroup = "Scaled Cloud Timeframe Settings"
+bool showScaledCloud = input.bool(true, "Show scaled cloud", group = scaledGroup)
+string tfInput = input.timeframe(defval = "W", title = "Scaled Cloud Timeframe", group = scaledGroup)
+
+string currTFGroup = "Current Timeframe (CTF) Settings"
+bool showStandardCloud = input.bool(true, "Show CTF cloud", group = currTFGroup)
+int conversionPeriods = input.int(cryptoConversionPeriod, minval=1, title="CTF Conversion Line Length", group = currTFGroup)
+int basePeriods = input.int(cryptoBasePriod, minval=1, title="CTF Base Line Length", group = currTFGroup)
+int laggingSpan2Periods = input.int(cryptoLaggingSpan2Period, minval=1, title="CTF Leading Span B Length", group = currTFGroup)
+int displacement = input.int(cryptoDisplacement, minval=1, title="CTF Lagging Span", group = currTFGroup)
+
+
+
+
+// ### CURRENT TIMEFRAME CLOUD ###
+// https://www.investopedia.com/terms/i/ichimoku-cloud.asp
+bool showCTF = showStandardCloud
+float conversionLine = donchian(conversionPeriods)
+float baseLine = donchian(basePeriods)
+float leadLine1 = math.avg(conversionLine, baseLine)
+float leadLine2 = donchian(laggingSpan2Periods)
+
+// plot lines
+plot(showCTF ? conversionLine : na, color=#2962FF, title="CTF Conversion Line", display = display.all)
+plot(showCTF ? baseLine : na, color=#B71C1C, title="CTF Base Line", display = display.all)
+plot(showCTF ? close : na, offset = -displacement + 1, color=#43A047, title="CTF Lagging Span", display = display.none)
+
+// plot the sacred cloud
+p1 = plot(showCTF ? leadLine1 : na, offset = displacement - 1, color=#A5D6A7,
+	 title="CTF Leading Span A", display = display.none)
+p2 = plot(showCTF ? leadLine2 : na, offset = displacement - 1, color=#EF9A9A,
+	 title="CTF Leading Span B", display = display.none)
+
+float upper = leadLine1 > leadLine2 ? leadLine1 : leadLine2
+float lower = leadLine1 < leadLine2 ? leadLine1 : leadLine2
+
+// These are the same as leadLine1 and leadLine2, not sure why they are included on ichimoku cloud indicators...
+// plot(showCTF ? upper : na, offset = displacement - 1, title = "CTF Kumo Cloud Upper Line", display = display.none)
+// plot(showCTF ? lower : na, offset = displacement - 1, title = "CTF Kumo Cloud Lower Line", display = display.none)
+fill(p1, p2, color = leadLine1 > leadLine2 ? color.rgb(67, 160, 71, 42) : color.rgb(244, 67, 54, 42), title = "CTF Cloud colors", display = display.all)
+
+
+
+
+// ### SCALED CLOUD ###
+// calc scale
+bool show = showScaledCloud
+float chartTFInMinutes = timeframe.in_seconds() / 60
+float scaledTFInMinutes = timeframe.in_seconds(tfInput) / 60
+float scale = scaledTFInMinutes/chartTFInMinutes
+
+// apply scale to CTF settings
+sConversionPeriods = math.ceil(conversionPeriods * scale)
+sBasePeriods = math.ceil(basePeriods * scale)
+sLaggingSpan2Periods = math.ceil(laggingSpan2Periods * scale)
+sDisplacement = math.ceil(displacement * scale)
+
+// get scaled cloud lines
+// TradingView will not look more than 15000 historical bars
+if sLaggingSpan2Periods <= 15000
+	conversionLine := donchian(sConversionPeriods)
+	baseLine := donchian(sBasePeriods)
+	leadLine1 := math.avg(conversionLine, baseLine)
+	leadLine2 := donchian(sLaggingSpan2Periods)
+// else
+	// runtime.error("The difference between the current timeframe and the requested scaled timeframe is too large for TradingView.")
+
+// draw nothing, scaled cloud timeframe delta too large
+show := sLaggingSpan2Periods <= 15000 ? show : na
+
+// plot lines
+plot(show ? conversionLine : na, color=#006064, title="Scaled Conversion Line", display = display.all)
+plot(show ? baseLine : na, color=#801922, title="Scaled Base Line", display = display.all)
+plot(show ? close : na, offset = -sDisplacement + 1, color=#81c784, title="Scaled Lagging Span", display = display.none)
+
+// plot the sacred scaled cloud
+sp1 = plot(show ? leadLine1 : na, offset = sDisplacement - 1, color=#1b5e20,
+	 title="Scaled Leading Span A", display = display.none)
+sp2 = plot(show ? leadLine2 : na, offset = sDisplacement - 1, color=#801922,
+	 title="Scaled Leading Span B", display = display.none)
+
+upper := leadLine1 > leadLine2 ? leadLine1 : leadLine2
+lower := leadLine1 < leadLine2 ? leadLine1 : leadLine2
+
+// These are the same as leadLine1 and leadLine2, not sure why they are included on ichimoku cloud indicators...
+// plot(show ? upper : na, offset = sDisplacement - 1, title = "Scaled Kumo Cloud Upper Line", display = display.none)
+// plot(show ? lower : na, offset = sDisplacement - 1, title = "Scaled Kumo Cloud Lower Line", display = display.none)
+fill(sp1, sp2, color = leadLine1 > leadLine2 ? color.new(#388e3c, 90) : color.new(#b22833, 90), title = "Scaled Cloud colors", display = display.all)
