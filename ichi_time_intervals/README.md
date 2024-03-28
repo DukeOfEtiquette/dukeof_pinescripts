@@ -26,3 +26,20 @@ Each line has the following user input settings:
 1. Show interval info
 1. Time period
 1. Vertical bar color
+
+## Notes
+
+### Time Intervals
+
+- PH or PL for a particulor time period can be "ahead" or "behind" each other, relative to time
+- PH or PL for multiplie time periods (tenkan, kijun, conversion) can have the same value
+- PH or PL of one time period can be "behind" or "ahead" of a diff time period. relative to time
+- PH or PL of one time period can be above or below a diff time period, relative to price
+- During an uptrend, the following can be observed:
+	- The PL for each time period are separate with lower periods being higher than higher periods
+	- The PH for each time period is the same value
+	- If the PH is the current bar, the trend is very strong
+- During a downtrned, the following can be observed:
+	- The PH for each time period are separate with lower periods being lower than higher periods
+	- The PL for each time period is the same value
+	- If the PL is the current bar, the trend is very strong

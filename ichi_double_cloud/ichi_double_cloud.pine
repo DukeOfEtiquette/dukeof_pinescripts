@@ -7,9 +7,9 @@ indicator(title="Ichimoku Double Cloud (9)", shorttitle="Ichimoku Double Cloud",
 donchian(len) => math.avg(ta.lowest(len), ta.highest(len))
 
 // legacy double settings
-int legacyConversionPeriod = 18
-int legacyBasePriod = 52
-int legacyLaggingSpan2Period = 104
+int legacyConversionPeriod = 9
+int legacyBasePriod = 26
+int legacyLaggingSpan2Period = 52
 int legacyDisplacement = 26
 
 // crypto cloud settings
@@ -19,8 +19,10 @@ int cryptoLaggingSpan2Period = 120
 int cryptoDisplacement = 30
 
 // ### Inputs ###
-bool showLegacyCloud = input.bool(true, "Show legacy cloud")
-bool showCryptoCloud = input.bool(true, "Show crypto cloud")
+string legacyGroup = "Legacy settings"
+bool showLegacyCloud = input.bool(true, "Show legacy cloud (9/26/52/26)", group = legacyGroup)
+bool doubleLegacy = input.bool(true, "Double settings? (18/52/104/26)", group = legacyGroup)
+bool showCryptoCloud = input.bool(true, "Show crypto cloud (20/60/120/30)", group = "Crypto settings")
 
 
 // ### CRYPTO TIMEFRAME CLOUD ###
@@ -53,6 +55,12 @@ fill(p1, p2, color = leadLine1 > leadLine2 ? color.rgb(67, 160, 71, 42) : color.
 
 // ### LEGACY CLOUD ###
 bool showLegacy = showLegacyCloud
+
+if doubleLegacy
+	legacyConversionPeriod := legacyConversionPeriod * 2
+	legacyBasePriod := legacyBasePriod * 2
+	legacyLaggingSpan2Period := legacyLaggingSpan2Period * 2
+
 conversionLine := donchian(legacyConversionPeriod)
 baseLine := donchian(legacyBasePriod)
 leadLine1 := math.avg(conversionLine, baseLine)
