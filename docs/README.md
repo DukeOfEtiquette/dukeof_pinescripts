@@ -29,6 +29,28 @@ N. Complimentary Indicators & Additional Resources
 	- Other indicators: https://www.youtube.com/watch?v=FiMMdTF28nQ&list=PLHTyNK8CDJBfZrYvZCSb0bkpv3JUAdRmJ&index=21
 	- Williams Fractals for entries and SL: https://youtu.be/7PRCv2YFBYc?t=827
 
+## FAQs
+
+- What are different styles of trading?
+	- ultra-low TF with lev
+	- ultra-high TF hodl
+	- shades inbetween
+	- Each requires consideration of different timeframes to be most efficient
+	- Each carries varying risk/reward and amount of attention required to "babysit" the trade
+		- hodl buys and forgets, very low effort. trading lev on 5 min chart requires constant vigilance.
+- What is a signal to enter a trade?
+	- Handful of cloud signals
+- What is a signal to add to a trade?
+	- Williams Fractals
+- What is a good SL?
+	- Williams Fractals
+- What is a good TP?
+	- Fibs, yearly pivots
+- How do I determine a position size?
+	- Measure risk/reward of trade
+	- Scale position based on that measure
+- How do I measure risk/reward?
+	- Voodoo, mostly.
 
 ## Timeframe Confluences
 

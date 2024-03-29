@@ -14,3 +14,10 @@ Build an indicator to...
 - Determine if WF SL is triggered
 - Determine if price "bounced" on a line in either direction
 - Determine strength of trend based on angle of MA
+
+
+Build a tool that...
+
+- Has dropdown and num input for LTF/HTF/HTF_TP
+	- Outputs LTF_TP
+	- Build combinations for each input as output
