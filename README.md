@@ -8,6 +8,7 @@ No doubt these are out of sync with my local editor, c'est la vie.
 
 Build an indicator to...
 
+- JOSH's MAs: daily 10/50 weekly 20
 - Measure bar body and both wicks
 - Detect if a body crossed a line
 - Detect if only wick crossed line
